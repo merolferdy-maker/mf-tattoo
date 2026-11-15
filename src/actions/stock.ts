@@ -5,42 +5,41 @@ import { revalidatePath } from "next/cache";
 
 export async function recordMovement(formData: FormData) {
   const userId = await requireUser();
-  const type = String(formData.get("type") || "ADDITION");
-  const itemType = String(formData.get("itemType") || "INK");
+  const type = String(formData.get("type") || "CONSUMPTION");
   const itemId = String(formData.get("itemId") || "");
-  const quantity = Number(formData.get("quantity") || 0);
+  const quantity = Math.abs(Math.round(Number(formData.get("quantity") || 0)));
   const notes = formData.get("notes") ? String(formData.get("notes")) : null;
+  const isNegative = type === "CONSUMPTION" || type === "DISPOSAL" || type === "EXPIRATION";
+  const delta = isNegative ? -quantity : quantity;
 
-  // resolve item name
+  let itemType = "";
   let itemName = "";
-  if (itemType === "INK") {
-    const i = await prisma.inkProduct.findFirst({ where: { id: itemId, userId } });
-    itemName = i ? `${i.brand} ${i.colorName}` : "";
-    if (i) {
-      const delta = type === "CONSUMPTION" || type === "DISPOSAL" || type === "EXPIRATION" ? -Math.abs(quantity) : Math.abs(quantity);
-      const next = i.currentQuantity + delta;
-      await prisma.inkProduct.update({ where: { id: itemId }, data: { currentQuantity: next < 0 ? 0 : next } });
-    }
-  } else if (itemType === "CARTRIDGE") {
-    const c = await prisma.cartridge.findFirst({ where: { id: itemId, userId } });
-    itemName = c ? `${c.brand} ${c.productName}` : "";
-    if (c) {
-      const delta = type === "CONSUMPTION" || type === "DISPOSAL" || type === "EXPIRATION" ? -Math.abs(quantity) : Math.abs(quantity);
-      const next = c.quantity + delta;
-      await prisma.cartridge.update({ where: { id: itemId }, data: { quantity: next < 0 ? 0 : next } });
-    }
-  } else if (itemType === "CONSUMABLE") {
-    const c = await prisma.consumable.findFirst({ where: { id: itemId, userId } });
-    itemName = c ? c.name : "";
-    if (c) {
-      const delta = type === "CONSUMPTION" || type === "DISPOSAL" || type === "EXPIRATION" ? -Math.abs(quantity) : Math.abs(quantity);
-      const next = c.quantity + delta;
-      await prisma.consumable.update({ where: { id: itemId }, data: { quantity: next < 0 ? 0 : next } });
-    }
+
+  const ink = await prisma.inkProduct.findFirst({ where: { id: itemId, userId } });
+  const cartridge = ink ? null : await prisma.cartridge.findFirst({ where: { id: itemId, userId } });
+  const consumable = ink || cartridge ? null : await prisma.consumable.findFirst({ where: { id: itemId, userId } });
+
+  if (ink) {
+    itemType = "INK";
+    itemName = `${ink.brand} ${ink.colorName}`;
+    const next = ink.currentQuantity + delta;
+    await prisma.inkProduct.update({ where: { id: itemId }, data: { currentQuantity: next < 0 ? 0 : next } });
+  } else if (cartridge) {
+    itemType = "CARTRIDGE";
+    itemName = `${cartridge.brand} ${cartridge.productName}`;
+    const next = cartridge.quantity + delta;
+    await prisma.cartridge.update({ where: { id: itemId }, data: { quantity: next < 0 ? 0 : next } });
+  } else if (consumable) {
+    itemType = "CONSUMABLE";
+    itemName = consumable.name;
+    const next = consumable.quantity + delta;
+    await prisma.consumable.update({ where: { id: itemId }, data: { quantity: next < 0 ? 0 : next } });
+  } else {
+    return;
   }
 
   await prisma.stockMovement.create({
-    data: { userId, type, itemType, itemId, itemName, quantity: Math.abs(quantity), notes },
+    data: { userId, type, itemType, itemId, itemName, quantity, notes },
   });
   revalidatePath("/stock");
   revalidatePath("/dashboard");

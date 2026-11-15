@@ -11,14 +11,14 @@ export function CartridgeForm({ suppliers, initial }: { suppliers: any[]; initia
         <Field name="brand" label="Brand" defaultValue={initial?.brand} required />
         <Field name="productName" label="Product name" defaultValue={initial?.productName} required />
         <Field name="configuration" label="Configuration (RL/RS/M1...)" defaultValue={initial?.configuration} />
-        <Field name="needleCount" label="Needle count" type="number" defaultValue={initial?.needleCount} />
+        <Field name="needleCount" label="Needle count" type="number" step="1" min="0" defaultValue={initial?.needleCount} />
         <Field name="needleDiameter" label="Needle diameter" type="number" step="0.01" defaultValue={initial?.needleDiameter} />
         <Field name="taper" label="Taper" defaultValue={initial?.taper} />
         <Field name="cartridgeType" label="Cartridge type" defaultValue={initial?.cartridgeType} />
         <Field name="compatibility" label="Compatibility notes" defaultValue={initial?.compatibility} />
-        <Field name="quantity" label="Quantity" type="number" defaultValue={initial?.quantity} />
-        <Field name="initialQuantity" label="Initial quantity" type="number" defaultValue={initial?.initialQuantity} />
-        <Field name="minStockLevel" label="Min stock level" type="number" defaultValue={initial?.minStockLevel} />
+        <Field name="quantity" label="Quantity" type="number" step="1" min="0" defaultValue={initial?.quantity} />
+        <Field name="initialQuantity" label="Initial quantity" type="number" step="1" min="0" defaultValue={initial?.initialQuantity} />
+        <Field name="minStockLevel" label="Min stock level" type="number" step="1" min="0" defaultValue={initial?.minStockLevel} />
         <Field name="purchasePrice" label="Purchase price" type="number" step="0.01" defaultValue={initial?.purchasePrice} />
         <div>
           <label className="block text-xs text-muted mb-1">Supplier</label>

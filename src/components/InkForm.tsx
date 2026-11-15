@@ -13,10 +13,10 @@ export function InkForm({ suppliers, initial }: { suppliers: any[]; initial?: an
         <Field name="colorName" label="Color name" defaultValue={initial?.colorName} required />
         <Field name="colorCode" label="Color code" defaultValue={initial?.colorCode} />
         <Field name="category" label="Category" defaultValue={initial?.category} />
-        <Field name="bottleVolume" label="Bottle volume (ml)" type="number" step="0.1" defaultValue={initial?.bottleVolume} />
-        <Field name="currentQuantity" label="Current quantity" type="number" step="0.1" defaultValue={initial?.currentQuantity} />
-        <Field name="initialQuantity" label="Initial quantity" type="number" step="0.1" defaultValue={initial?.initialQuantity} />
-        <Field name="minStockLevel" label="Min stock level" type="number" step="0.1" defaultValue={initial?.minStockLevel} />
+        <Field name="bottleVolume" label="Bottle volume (ml)" type="number" step="1" min="0" defaultValue={initial?.bottleVolume} />
+        <Field name="currentQuantity" label="Current quantity" type="number" step="1" min="0" defaultValue={initial?.currentQuantity} />
+        <Field name="initialQuantity" label="Initial quantity" type="number" step="1" min="0" defaultValue={initial?.initialQuantity} />
+        <Field name="minStockLevel" label="Min stock level" type="number" step="1" min="0" defaultValue={initial?.minStockLevel} />
         <Field name="purchaseDate" label="Purchase date" type="date" defaultValue={initial?.purchaseDate ? new Date(initial.purchaseDate).toISOString().slice(0,10) : ""} />
         <Field name="openingDate" label="Opening date" type="date" defaultValue={initial?.openingDate ? new Date(initial.openingDate).toISOString().slice(0,10) : ""} />
         <Field name="expirationDate" label="Expiration date" type="date" defaultValue={initial?.expirationDate ? new Date(initial.expirationDate).toISOString().slice(0,10) : ""} />

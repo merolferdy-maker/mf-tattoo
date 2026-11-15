@@ -11,9 +11,9 @@ export function ConsumableForm({ suppliers, initial }: { suppliers: any[]; initi
         <Field name="name" label="Name" defaultValue={initial?.name} required />
         <Field name="brand" label="Brand" defaultValue={initial?.brand} />
         <Field name="category" label="Category" defaultValue={initial?.category} />
-        <Field name="quantity" label="Quantity" type="number" step="0.1" defaultValue={initial?.quantity} />
+        <Field name="quantity" label="Quantity" type="number" step="1" min="0" defaultValue={initial?.quantity} />
         <Field name="unit" label="Unit" defaultValue={initial?.unit} />
-        <Field name="minStockLevel" label="Min stock level" type="number" step="0.1" defaultValue={initial?.minStockLevel} />
+        <Field name="minStockLevel" label="Min stock level" type="number" step="1" min="0" defaultValue={initial?.minStockLevel} />
         <Field name="price" label="Price" type="number" step="0.01" defaultValue={initial?.price} />
         <div>
           <label className="block text-xs text-muted mb-1">Supplier</label>
