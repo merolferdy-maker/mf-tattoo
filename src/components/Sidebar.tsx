@@ -1,6 +1,4 @@
-"use client";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
 import { LayoutDashboard, Cpu, Settings2, Droplets, Beaker, Package, Syringe, Boxes, Truck, NotebookPen, CalendarClock, BarChart3, Star, Search, ShieldCheck, LogOut } from "lucide-react";
 
 const nav = [
@@ -41,10 +39,10 @@ export default function Sidebar({ collapsed }: { collapsed?: boolean }) {
         })}
       </nav>
       <div className="border-t border-border p-3">
-        <button onClick={() => signOut({ callbackUrl: "/login" })} className="flex items-center gap-3 px-2 py-2 text-sm text-muted hover:text-foreground w-full">
+        <a href="/api/auth/signout" className="flex items-center gap-3 px-2 py-2 text-sm text-muted hover:text-foreground w-full">
           <LogOut size={16} />
           {!collapsed && <span>Sign out</span>}
-        </button>
+        </a>
       </div>
     </aside>
   );
