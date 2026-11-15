@@ -20,20 +20,20 @@ const nav = [
 
 export default function Sidebar({ collapsed }: { collapsed?: boolean }) {
   return (
-    <aside className={`hidden md:flex flex-col border-r border-border bg-background-secondary ${collapsed ? "w-16" : "w-60"} transition-all duration-200`}>
+    <aside className={`hidden md:flex flex-col border-r border-border bg-background-secondary ${collapsed ? "w-16" : "w-56"} transition-all duration-200`}>
       <div className="px-4 py-5 border-b border-border">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-accent/10 border border-border flex items-center justify-center text-accent font-bold text-sm">M&F</div>
-          {!collapsed && <span className="text-sm font-semibold tracking-wide">TATTOO STUDIO</span>}
+          <div className="w-9 h-9 bg-card border border-border flex items-center justify-center text-accent font-bold text-xs tracking-wider">M&F</div>
+          {!collapsed && <span className="text-xs font-semibold tracking-[0.2em] text-muted">TATTOO STUDIO</span>}
         </Link>
       </div>
-      <nav className="flex-1 overflow-y-auto py-3">
+      <nav className="flex-1 overflow-y-auto py-2">
         {nav.map((n) => {
           const Icon = n.icon;
           return (
-            <Link key={n.href} href={n.href} className="flex items-center gap-3 px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-card transition-colors">
-              <Icon size={16} />
-              {!collapsed && <span>{n.label}</span>}
+            <Link key={n.href} href={n.href} className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted hover:text-foreground hover:bg-card/60 transition-colors border-l-2 border-transparent hover:border-accent">
+              <Icon size={15} />
+              {!collapsed && <span className="tracking-wide">{n.label}</span>}
             </Link>
           );
         })}
