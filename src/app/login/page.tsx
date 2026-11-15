@@ -32,6 +32,9 @@ export default function LoginPage() {
         <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" required className="w-full bg-background border border-border px-3 py-2 text-sm" />
         {error && <div className="text-red-400 text-xs">{error}</div>}
         <button disabled={loading} className="w-full bg-foreground text-background py-2 text-sm font-medium disabled:opacity-50">{loading ? "..." : "Sign in"}</button>
+        <div className="text-xs text-muted text-center">
+          No account? <a href="/register" className="text-foreground underline">Register</a>
+        </div>
       </form>
     </div>
   );
