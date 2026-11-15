@@ -1,13 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
 import Link from "next/link";
+import { PageHeader } from "@/components/ui/kit";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
   const userId = await requireUser();
   const term = q?.trim() || "";
   if (!term) {
-    return <div className="p-4 md:p-6 text-muted text-sm">Enter a search term.</div>;
+    return <div className="p-4 md:p-8 max-w-7xl mx-auto"><PageHeader title="Search" subtitle="Enter a search term in the top bar." /></div>;
   }
   const [machines, presets, inks, recipes, cartridges, consumables, suppliers, notes] = await Promise.all([
     prisma.machine.findMany({ where: { userId, OR: [{ brand: { contains: term } }, { model: { contains: term } }, { customName: { contains: term } }] } }),
@@ -32,19 +33,26 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   ];
 
   return (
-    <div className="p-4 md:p-6 space-y-4">
-      <h1 className="text-xl font-semibold">Search: {term}</h1>
-      {sections.map((s) => (
-        <div key={s.title}>
-          <div className="text-sm font-medium text-muted mb-1">{s.title} ({s.items.length})</div>
-          {s.items.length === 0 && <div className="text-muted text-xs">None.</div>}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            {s.items.map((i) => (
-              <Link key={i.href} href={i.href} className="bg-card border border-border p-2 text-sm hover:border-accent">{i.label}</Link>
-            ))}
+    <div className="p-4 md:p-8 max-w-7xl mx-auto fade-up">
+      <PageHeader title={`Search: ${term}`} subtitle={`${sections.reduce((a, s) => a + s.items.length, 0)} results`} />
+      <div className="space-y-6">
+        {sections.map((s) => (
+          <div key={s.title}>
+            <div className="text-xs text-muted uppercase tracking-wider mb-2">{s.title} ({s.items.length})</div>
+            {s.items.length === 0 ? (
+              <div className="text-muted text-sm">None.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {s.items.map((i) => (
+                  <Link key={i.href} href={i.href} className="bg-card border border-border rounded-sm p-3 text-sm text-muted hover:text-foreground hover:border-border-hover transition-colors">
+                    {i.label}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

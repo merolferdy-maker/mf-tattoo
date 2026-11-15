@@ -23,7 +23,7 @@ const nav = [
 export default function Sidebar({ collapsed }: { collapsed?: boolean }) {
   const pathname = usePathname();
   return (
-    <aside className={`hidden md:flex flex-col border-r border-border bg-background-secondary ${collapsed ? "w-16" : "w-56"} transition-all duration-200`}>
+    <aside className={`hidden md:flex flex-col border-r border-border bg-background-secondary ${collapsed ? "w-16" : "w-64"} transition-all duration-200`}>
       <div className="px-4 py-5 border-b border-border">
         <a href="/dashboard" className="flex items-center gap-2">
           <div className="w-9 h-9 bg-card border border-border flex items-center justify-center text-accent font-bold text-xs tracking-wider">M&F</div>
