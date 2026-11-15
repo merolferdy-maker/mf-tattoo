@@ -1,0 +1,421 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  image        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  machines        Machine[]
+  machinePresets  MachinePreset[]
+  presetVersions  PresetVersion[]
+  inkProducts     InkProduct[]
+  inkBatches      InkBatch[]
+  washRecipes     WashRecipe[]
+  washCollections WashCollection[]
+  cartridges      Cartridge[]
+  consumables     Consumable[]
+  suppliers       Supplier[]
+  stockMovements  StockMovement[]
+  technicalNotes  TechnicalNote[]
+  sessionLogs     SessionLog[]
+  favorites       Favorite[]
+  recentlyUsed    RecentlyUsed[]
+}
+
+model Machine {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand          String
+  model          String
+  customName     String?
+  type           String?
+  driveSystem    String?
+  strokeMin      Float?
+  strokeMax      Float?
+  fixedStroke    Boolean   @default(false)
+  weight         Float?
+  batteryInfo    String?
+  connectionType String?
+  purchaseDate   DateTime?
+  price          Float?
+  serialNumber   String?
+  imageUrl          String?
+  notes             String?
+  favorite          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  presets           MachinePreset[]
+  sessionLogs    SessionLog[]
+  technicalNotes TechnicalNote[]
+
+  @@index([userId])
+}
+
+model MachinePreset {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  machineId      String
+  machine        Machine  @relation(fields: [machineId], references: [id], onDelete: Cascade)
+  name           String
+  category       String
+  voltage        Float?
+  stroke         Float?
+  needleConfig   String?
+  cartridgeBrand String?
+  needleDiameter Float?
+  taper          String?
+  technique      String?
+  notes          String?
+  favorite       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  versions       PresetVersion[]
+  sessionLogs    SessionLog[]
+  technicalNotes TechnicalNote[]
+
+  @@index([userId])
+  @@index([machineId])
+}
+
+model PresetVersion {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  presetId       String
+  preset         MachinePreset @relation(fields: [presetId], references: [id], onDelete: Cascade)
+  versionNumber  Int
+  voltage        Float?
+  stroke         Float?
+  needleConfig   String?
+  cartridgeBrand String?
+  needleDiameter Float?
+  taper          String?
+  technique      String?
+  notes          String?
+  createdAt      DateTime      @default(now())
+
+  @@index([presetId])
+}
+
+model InkProduct {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand           String
+  productName     String
+  colorName       String
+  colorCode       String?
+  category        String?
+  bottleVolume    Float?
+  currentQuantity   Float    @default(0)
+  initialQuantity   Float    @default(0)
+  minStockLevel     Float    @default(0)
+  purchaseDate    DateTime?
+  openingDate     DateTime?
+  expirationDate  DateTime?
+  batchNumber     String?
+  supplierId      String?
+  supplier        Supplier? @relation(fields: [supplierId], references: [id])
+  price           Float?
+  imageUrl        String?
+  notes           String?
+  favorite        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  batches           InkBatch[]
+  stockMovements    StockMovement[]
+  washRecipes       WashRecipe[]
+
+  @@index([userId])
+}
+
+model InkBatch {
+  id              String     @id @default(cuid())
+  userId          String
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  inkProductId    String
+  inkProduct      InkProduct @relation(fields: [inkProductId], references: [id], onDelete: Cascade)
+  batchNumber     String?
+  quantity        Float      @default(0)
+  initialQuantity Float      @default(0)
+  purchaseDate    DateTime?
+  openingDate     DateTime?
+  expirationDate  DateTime?
+  price           Float?
+  supplierId      String?
+  supplier        Supplier?  @relation(fields: [supplierId], references: [id])
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([inkProductId])
+}
+
+model WashCollection {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  type      String // WHITE or GRAY
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipes WashRecipe[]
+
+  @@index([userId])
+}
+
+model WashRecipe {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collectionId    String?
+  collection      WashCollection? @relation(fields: [collectionId], references: [id])
+  name            String
+  category        String? // WHITE or GRAY
+  type            String // WHITE or GRAY
+  baseInkBrand    String?
+  baseInkName     String?
+  baseInkId       String?
+  baseInk         InkProduct?     @relation(fields: [baseInkId], references: [id])
+  diluentBrand    String?
+  diluentType     String?
+  totalVolume     Float?
+  inkQuantity     Float?
+  diluentQuantity Float?
+  ratio           String?
+  percentage      Float?
+  drops           Int?
+  milliliters     Float?
+  notes           String?
+  imageUrl        String?
+  versionNumber   Int             @default(1)
+  favorite        Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  shades         WashShade[]
+  versions       WashRecipeVersion[]
+  technicalNotes TechnicalNote[]
+  sessionLogs    SessionLog[]
+
+  @@index([userId])
+}
+
+model WashShade {
+  id                String     @id @default(cuid())
+  recipeId          String
+  recipe            WashRecipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  name              String
+  number            Int
+  colorPreview      String?
+  inkPercentage     Float?
+  diluentPercentage Float?
+  inkQuantity       Float?
+  diluentQuantity   Float?
+  totalVolume       Float?
+  notes             String?
+  sortOrder         Int        @default(0)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([recipeId])
+}
+
+model WashRecipeVersion {
+  id            String     @id @default(cuid())
+  recipeId      String
+  recipe        WashRecipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  versionNumber Int
+  snapshot      String
+  createdAt     DateTime   @default(now())
+
+  @@index([recipeId])
+}
+
+model Cartridge {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand           String
+  productName     String
+  configuration   String?
+  needleCount     Int?
+  needleDiameter  Float?
+  taper           String?
+  cartridgeType   String?
+  compatibility   String?
+  quantity        Int       @default(0)
+  initialQuantity Int       @default(0)
+  minStockLevel   Int       @default(0)
+  purchasePrice   Float?
+  supplierId      String?
+  supplier        Supplier? @relation(fields: [supplierId], references: [id])
+  imageUrl        String?
+  notes           String?
+  favorite        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  stockMovements StockMovement[]
+  technicalNotes TechnicalNote[]
+
+  @@index([userId])
+}
+
+model Consumable {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  brand          String?
+  category       String?
+  quantity       Float     @default(0)
+  unit           String?
+  minStockLevel  Float     @default(0)
+  price          Float?
+  supplierId     String?
+  supplier       Supplier? @relation(fields: [supplierId], references: [id])
+  purchaseDate   DateTime?
+  expirationDate DateTime?
+  imageUrl       String?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  stockMovements StockMovement[]
+
+  @@index([userId])
+}
+
+model Supplier {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  website       String?
+  email         String?
+  phone         String?
+  contactPerson String?
+  address       String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  inkProducts    InkProduct[]
+  inkBatches     InkBatch[]
+  cartridges     Cartridge[]
+  consumables    Consumable[]
+  stockMovements StockMovement[]
+
+  @@index([userId])
+}
+
+model StockMovement {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         String // PURCHASE, ADDITION, CONSUMPTION, CORRECTION, DISPOSAL, EXPIRATION
+  itemType     String // INK, CARTRIDGE, CONSUMABLE
+  itemId       String
+  itemName     String?
+  quantity     Float
+  unit         String?
+  price        Float?
+  supplierId   String?
+  supplier     Supplier?   @relation(fields: [supplierId], references: [id])
+  inkProductId String?
+  inkProduct   InkProduct? @relation(fields: [inkProductId], references: [id])
+  cartridgeId  String?
+  cartridge    Cartridge?  @relation(fields: [cartridgeId], references: [id])
+  consumableId String?
+  consumable   Consumable? @relation(fields: [consumableId], references: [id])
+  notes        String?
+  createdAt    DateTime    @default(now())
+
+  @@index([userId])
+  @@index([itemType, itemId])
+}
+
+model TechnicalNote {
+  id          String         @id @default(cuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  category    String?
+  description String?
+  tags        String?
+  imageUrl    String?
+  machineId   String?
+  machine     Machine?       @relation(fields: [machineId], references: [id])
+  presetId    String?
+  preset      MachinePreset? @relation(fields: [presetId], references: [id])
+  cartridgeId String?
+  cartridge   Cartridge?     @relation(fields: [cartridgeId], references: [id])
+  recipeId    String?
+  recipe      WashRecipe?    @relation(fields: [recipeId], references: [id])
+  favorite    Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([userId])
+}
+
+model SessionLog {
+  id            String         @id @default(cuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionDate   DateTime       @default(now())
+  machineId     String?
+  machine       Machine?       @relation(fields: [machineId], references: [id])
+  presetId      String?
+  preset        MachinePreset? @relation(fields: [presetId], references: [id])
+  cartridgeInfo String?
+  inkUsed       String?
+  recipeId      String?
+  recipe        WashRecipe?    @relation(fields: [recipeId], references: [id])
+  notes         String?
+  imageUrls     String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([userId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemType  String
+  itemId    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, itemType, itemId])
+  @@index([userId])
+}
+
+model RecentlyUsed {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemType String
+  itemId   String
+  usedAt   DateTime @default(now())
+
+  @@index([userId])
+}
