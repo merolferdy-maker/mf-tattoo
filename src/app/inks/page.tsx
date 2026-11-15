@@ -38,6 +38,7 @@ export default async function InksPage({ searchParams }: { searchParams: Promise
               </div>
               <div className="mt-4 flex items-center justify-between text-xs">
                 <span className="text-muted">Qty: <span className="text-foreground">{i.currentQuantity}</span> / {i.initialQuantity}</span>
+                {i.currentQuantity <= 0 && <span className="px-2 py-0.5 text-xs rounded-sm bg-red-900/20 border border-red-900/40 text-red-400">ESAURITO</span>}
                 {i.bottleVolume && <span className="text-muted">{i.bottleVolume}ml</span>}
               </div>
               {i.expirationDate && (

@@ -24,8 +24,8 @@ export default async function AnalyticsPage() {
   const consumption = movements.filter((m) => m.type === "CONSUMPTION");
   const purchasedValue = purchases.reduce((a, m) => a + (m.price ?? 0), 0);
   const catMap: Record<string, number> = {};
-  for (const i of inks) catMap[i.category || "Ink"] = (catMap[i.category || "Ink"] || 0) + 1;
-  for (const c of consumables) catMap[c.category || "Consumable"] = (catMap[c.category || "Consumable"] || 0) + 1;
+  for (const i of inks) if (i.currentQuantity > 0) catMap[i.category || "Ink"] = (catMap[i.category || "Ink"] || 0) + 1;
+  for (const c of consumables) if (c.quantity > 0) catMap[c.category || "Consumable"] = (catMap[c.category || "Consumable"] || 0) + 1;
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto fade-up">
@@ -33,9 +33,9 @@ export default async function AnalyticsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <StatCard label="Machines" value={machines} />
         <StatCard label="Presets" value={presets} />
-        <StatCard label="Ink bottles" value={inks.length} />
-        <StatCard label="Cartridges" value={cartridges.reduce((a, c) => a + c.quantity, 0)} />
-        <StatCard label="Consumables" value={consumables.length} />
+        <StatCard label="Ink bottles" value={inks.filter((i) => i.currentQuantity > 0).length} />
+        <StatCard label="Cartridges" value={cartridges.filter((c) => c.quantity > 0).reduce((a, c) => a + c.quantity, 0)} />
+        <StatCard label="Consumables" value={consumables.filter((c) => c.quantity > 0).length} />
         <StatCard label="Low stock" value={lowStock} />
         <StatCard label="Expiring (30d)" value={expiring} />
         <StatCard label="Inventory value" value={`$${totalValue.toFixed(2)}`} />

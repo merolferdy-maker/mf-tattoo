@@ -18,21 +18,24 @@ export async function recordMovement(formData: FormData) {
     itemName = i ? `${i.brand} ${i.colorName}` : "";
     if (i) {
       const delta = type === "CONSUMPTION" || type === "DISPOSAL" || type === "EXPIRATION" ? -Math.abs(quantity) : Math.abs(quantity);
-      await prisma.inkProduct.update({ where: { id: itemId }, data: { currentQuantity: i.currentQuantity + delta } });
+      const next = i.currentQuantity + delta;
+      await prisma.inkProduct.update({ where: { id: itemId }, data: { currentQuantity: next < 0 ? 0 : next } });
     }
   } else if (itemType === "CARTRIDGE") {
     const c = await prisma.cartridge.findFirst({ where: { id: itemId, userId } });
     itemName = c ? `${c.brand} ${c.productName}` : "";
     if (c) {
       const delta = type === "CONSUMPTION" || type === "DISPOSAL" || type === "EXPIRATION" ? -Math.abs(quantity) : Math.abs(quantity);
-      await prisma.cartridge.update({ where: { id: itemId }, data: { quantity: c.quantity + delta } });
+      const next = c.quantity + delta;
+      await prisma.cartridge.update({ where: { id: itemId }, data: { quantity: next < 0 ? 0 : next } });
     }
   } else if (itemType === "CONSUMABLE") {
     const c = await prisma.consumable.findFirst({ where: { id: itemId, userId } });
     itemName = c ? c.name : "";
     if (c) {
       const delta = type === "CONSUMPTION" || type === "DISPOSAL" || type === "EXPIRATION" ? -Math.abs(quantity) : Math.abs(quantity);
-      await prisma.consumable.update({ where: { id: itemId }, data: { quantity: c.quantity + delta } });
+      const next = c.quantity + delta;
+      await prisma.consumable.update({ where: { id: itemId }, data: { quantity: next < 0 ? 0 : next } });
     }
   }
 
@@ -41,6 +44,10 @@ export async function recordMovement(formData: FormData) {
   });
   revalidatePath("/stock");
   revalidatePath("/dashboard");
+  revalidatePath("/inks");
+  revalidatePath("/cartridges");
+  revalidatePath("/consumables");
+  revalidatePath("/analytics");
 }
 
 export async function markPurchased(formData: FormData) {

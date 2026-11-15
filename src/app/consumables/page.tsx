@@ -21,6 +21,7 @@ export default async function ConsumablesPage() {
               <div className="text-xs text-muted mt-0.5">{c.brand} {c.category}</div>
               <div className="mt-4 flex items-center justify-between text-xs">
                 <span className="text-muted">Qty: <span className="text-foreground">{c.quantity}</span> {c.unit}</span>
+                {c.quantity <= 0 && <span className="px-2 py-0.5 text-xs rounded-sm bg-red-900/20 border border-red-900/40 text-red-400">ESAURITO</span>}
                 <span className="text-muted">Min: {c.minStockLevel}</span>
               </div>
               {c.notes && <div className="mt-2 text-xs text-muted line-clamp-2">{c.notes}</div>}

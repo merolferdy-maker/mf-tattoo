@@ -31,13 +31,13 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <StatCard label="Machines" value={machines.length} />
-        <StatCard label="Ink bottles" value={inks.length} />
-        <StatCard label="Cartridges" value={cartridges.reduce((a, c) => a + c.quantity, 0)} />
-        <StatCard label="Consumables" value={consumables.length} />
+        <StatCard label="Ink bottles" value={inks.filter((i) => i.currentQuantity > 0).length} />
+        <StatCard label="Cartridges" value={cartridges.filter((c) => c.quantity > 0).reduce((a, c) => a + c.quantity, 0)} />
+        <StatCard label="Consumables" value={consumables.filter((c) => c.quantity > 0).length} />
         <StatCard label="Presets" value={presets.length} />
         <StatCard label="Low stock" value={lowStock} hint={lowStock > 0 ? "Needs attention" : "All good"} />
         <StatCard label="Expiring soon" value={expiring} hint={expiring > 0 ? "Within 30 days" : "None"} />
-        <StatCard label="Total products" value={inks.length + cartridges.length + consumables.length} />
+        <StatCard label="Total products" value={inks.filter((i) => i.currentQuantity > 0).length + cartridges.filter((c) => c.quantity > 0).length + consumables.filter((c) => c.quantity > 0).length} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">

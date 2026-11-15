@@ -43,9 +43,9 @@ export default async function StockPage() {
           <div>
             <label className="block text-xs text-muted mb-1">Item</label>
             <select name="itemId" className="w-full bg-background border border-border rounded-sm px-3 py-2 text-sm">
-              <optgroup label="Inks">{inks.map((i) => <option key={i.id} value={i.id}>{i.brand} {i.colorName}</option>)}</optgroup>
-              <optgroup label="Cartridges">{cartridges.map((c) => <option key={c.id} value={c.id}>{c.brand} {c.productName}</option>)}</optgroup>
-              <optgroup label="Consumables">{consumables.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</optgroup>
+              <optgroup label="Inks">{inks.map((i) => <option key={i.id} value={i.id}>{i.brand} {i.colorName}{i.currentQuantity <= 0 ? " (ESAURITO)" : ""}</option>)}</optgroup>
+              <optgroup label="Cartridges">{cartridges.map((c) => <option key={c.id} value={c.id}>{c.brand} {c.productName}{c.quantity <= 0 ? " (ESAURITO)" : ""}</option>)}</optgroup>
+              <optgroup label="Consumables">{consumables.map((c) => <option key={c.id} value={c.id}>{c.name}{c.quantity <= 0 ? " (ESAURITO)" : ""}</option>)}</optgroup>
             </select>
           </div>
           <div>
