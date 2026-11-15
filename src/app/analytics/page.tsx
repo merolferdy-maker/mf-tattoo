@@ -33,9 +33,9 @@ export default async function AnalyticsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <StatCard label="Machines" value={machines} />
         <StatCard label="Presets" value={presets} />
-        <StatCard label="Ink bottles" value={inks.filter((i) => i.currentQuantity > 0).length} />
-        <StatCard label="Cartridges" value={cartridges.filter((c) => c.quantity > 0).reduce((a, c) => a + c.quantity, 0)} />
-        <StatCard label="Consumables" value={consumables.filter((c) => c.quantity > 0).length} />
+        <StatCard label="Ink bottles" value={inks.reduce((a, i) => a + (i.currentQuantity > 0 ? i.currentQuantity : 0), 0)} />
+        <StatCard label="Cartridges" value={cartridges.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0)} />
+        <StatCard label="Consumables" value={consumables.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0)} />
         <StatCard label="Low stock" value={lowStock} />
         <StatCard label="Expiring (30d)" value={expiring} />
         <StatCard label="Inventory value" value={`$${totalValue.toFixed(2)}`} />

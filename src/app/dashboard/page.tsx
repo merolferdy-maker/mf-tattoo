@@ -31,13 +31,13 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <StatCard label="Machines" value={machines.length} />
-        <StatCard label="Ink bottles" value={inks.filter((i) => i.currentQuantity > 0).length} />
-        <StatCard label="Cartridges" value={cartridges.filter((c) => c.quantity > 0).reduce((a, c) => a + c.quantity, 0)} />
-        <StatCard label="Consumables" value={consumables.filter((c) => c.quantity > 0).length} />
+        <StatCard label="Ink bottles" value={inks.reduce((a, i) => a + (i.currentQuantity > 0 ? i.currentQuantity : 0), 0)} />
+        <StatCard label="Cartridges" value={cartridges.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0)} />
+        <StatCard label="Consumables" value={consumables.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0)} />
         <StatCard label="Presets" value={presets.length} />
         <StatCard label="Low stock" value={lowStock} hint={lowStock > 0 ? "Needs attention" : "All good"} />
         <StatCard label="Expiring soon" value={expiring} hint={expiring > 0 ? "Within 30 days" : "None"} />
-        <StatCard label="Total products" value={inks.filter((i) => i.currentQuantity > 0).length + cartridges.filter((c) => c.quantity > 0).length + consumables.filter((c) => c.quantity > 0).length} />
+        <StatCard label="Total products" value={inks.reduce((a, i) => a + (i.currentQuantity > 0 ? i.currentQuantity : 0), 0) + cartridges.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0) + consumables.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0)} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
           {recentInks.map((i) => (
             <Link key={i.id} href={`/inks/${i.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
               <span className="text-sm">{i.brand} {i.colorName}</span>
-              <span className="text-xs text-muted">{i.currentQuantity} ml</span>
+              <span className="text-xs text-muted">{i.currentQuantity}</span>
             </Link>
           ))}
         </SectionCard>
