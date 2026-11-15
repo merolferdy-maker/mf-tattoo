@@ -5,20 +5,21 @@ import { PageHeader, StatCard, EmptyState } from "@/components/ui/kit";
 
 export default async function DashboardPage() {
   const userId = await requireUser();
-  const [machines, presets, inks, cartridges, consumables, movements] = await Promise.all([
+  const [machines, presets, inks, cartridges, consumables] = await Promise.all([
     prisma.machine.findMany({ where: { userId } }),
-    prisma.machinePreset.findMany({ where: { userId }, orderBy: { updatedAt: "desc" }, take: 5 }),
-    prisma.inkProduct.findMany({ where: { userId } }),
-    prisma.cartridge.findMany({ where: { userId } }),
-    prisma.consumable.findMany({ where: { userId } }),
-    prisma.stockMovement.findMany({ where: { userId }, orderBy: { createdAt: "desc" }, take: 8 }),
+    prisma.machinePreset.findMany({ where: { userId } }),
+    prisma.inkProduct.findMany({ where: { userId }, orderBy: { updatedAt: "desc" } }),
+    prisma.cartridge.findMany({ where: { userId }, orderBy: { updatedAt: "desc" } }),
+    prisma.consumable.findMany({ where: { userId }, orderBy: { updatedAt: "desc" } }),
   ]);
+
   const lowStock = inks.filter((i) => i.minStockLevel && i.currentQuantity <= (i.minStockLevel ?? 0)).length
     + cartridges.filter((c) => c.minStockLevel && c.quantity <= c.minStockLevel).length
     + consumables.filter((c) => c.minStockLevel && c.quantity <= c.minStockLevel).length;
   const expiring = inks.filter((i) => i.expirationDate && new Date(i.expirationDate) < new Date(Date.now() + 30 * 86400000)).length;
-  const recentInks = [...inks].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5);
-  const favRecipes = await prisma.washRecipe.findMany({ where: { userId, favorite: true }, take: 5 });
+  const inkTotal = inks.reduce((a, i) => a + (i.currentQuantity > 0 ? i.currentQuantity : 0), 0);
+  const cartTotal = cartridges.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0);
+  const consTotal = consumables.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0);
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto fade-up">
@@ -30,71 +31,50 @@ export default async function DashboardPage() {
       } />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <StatCard label="Inchiostri" value={inkTotal} />
+        <StatCard label="Aghi" value={cartTotal} />
+        <StatCard label="Consumabili" value={consTotal} />
+        <StatCard label="Totale prodotti" value={inkTotal + cartTotal + consTotal} />
         <StatCard label="Machines" value={machines.length} />
-        <StatCard label="Ink bottles" value={inks.reduce((a, i) => a + (i.currentQuantity > 0 ? i.currentQuantity : 0), 0)} />
-        <StatCard label="Cartridges" value={cartridges.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0)} />
-        <StatCard label="Consumables" value={consumables.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0)} />
         <StatCard label="Presets" value={presets.length} />
         <StatCard label="Low stock" value={lowStock} hint={lowStock > 0 ? "Needs attention" : "All good"} />
         <StatCard label="Expiring soon" value={expiring} hint={expiring > 0 ? "Within 30 days" : "None"} />
-        <StatCard label="Total products" value={inks.reduce((a, i) => a + (i.currentQuantity > 0 ? i.currentQuantity : 0), 0) + cartridges.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0) + consumables.reduce((a, c) => a + (c.quantity > 0 ? c.quantity : 0), 0)} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-        <SectionCard title="Quick actions">
-          <div className="grid grid-cols-2 gap-2">
-            <QuickLink href="/inks/new" label="Add ink" />
-            <QuickLink href="/machines/new" label="Add machine" />
-            <QuickLink href="/presets/new" label="Create preset" />
-            <QuickLink href="/wash-lab/new" label="Create wash recipe" />
-            <QuickLink href="/cartridges/new" label="Add cartridge" />
-            <QuickLink href="/consumables/new" label="Add consumable" />
-            <QuickLink href="/stock" label="Register purchase" />
-            <QuickLink href="/stock" label="Register consumption" />
-          </div>
-        </SectionCard>
-        <SectionCard title="Notifications">
-          {lowStock === 0 && expiring === 0 && <div className="text-muted text-sm">No alerts. Everything is in order.</div>}
-          {lowStock > 0 && <div className="text-sm text-amber-400/90 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400" />{lowStock} low-stock products</div>}
-          {expiring > 0 && <div className="text-sm text-amber-400/90 flex items-center gap-2 mt-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400" />{expiring} products expiring soon</div>}
-        </SectionCard>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <SectionCard title="Recently added inks">
-          {recentInks.length === 0 && <EmptyState title="No inks yet" description="Add your first ink product." action={<Link href="/inks/new" className="text-sm text-accent hover:underline">Add ink</Link>} />}
-          {recentInks.map((i) => (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
+        <SectionCard title="Inchiostri">
+          {inks.length === 0 && <EmptyState title="No inks yet" description="Add your first ink product." action={<Link href="/inks/new" className="text-sm text-accent hover:underline">Add ink</Link>} />}
+          {inks.map((i) => (
             <Link key={i.id} href={`/inks/${i.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
               <span className="text-sm">{i.brand} {i.colorName}</span>
-              <span className="text-xs text-muted">{i.currentQuantity}</span>
+              {i.currentQuantity <= 0
+                ? <span className="px-2 py-0.5 text-xs rounded-sm bg-red-900/20 border border-red-900/40 text-red-400">ESAURITO</span>
+                : <span className="text-xs text-foreground font-medium">{i.currentQuantity}</span>}
             </Link>
           ))}
         </SectionCard>
-        <SectionCard title="Recently modified presets">
-          {presets.length === 0 && <EmptyState title="No presets yet" description="Create your first machine preset." action={<Link href="/presets/new" className="text-sm text-accent hover:underline">Create preset</Link>} />}
-          {presets.map((p) => (
-            <Link key={p.id} href={`/presets/${p.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
-              <span className="text-sm">{p.name}</span>
-              <span className="text-xs text-muted">{p.category.replace(/_/g, " ")}</span>
-            </Link>
-          ))}
-        </SectionCard>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <SectionCard title="Favorite wash recipes">
-          {favRecipes.length === 0 && <EmptyState title="No favorites" description="Star your favorite wash recipes." />}
-          {favRecipes.map((r) => (
-            <Link key={r.id} href={`/wash-lab/${r.id}`} className="block py-2 border-b border-border last:border-0 text-sm text-muted hover:text-foreground transition-colors">{r.name}</Link>
+        <SectionCard title="Aghi">
+          {cartridges.length === 0 && <EmptyState title="No needles yet" description="Add your first cartridge." action={<Link href="/cartridges/new" className="text-sm text-accent hover:underline">Add cartridge</Link>} />}
+          {cartridges.map((c) => (
+            <Link key={c.id} href={`/cartridges/${c.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
+              <span className="text-sm">{c.brand} {c.productName}</span>
+              {c.quantity <= 0
+                ? <span className="px-2 py-0.5 text-xs rounded-sm bg-red-900/20 border border-red-900/40 text-red-400">ESAURITO</span>
+                : <span className="text-xs text-foreground font-medium">{c.quantity}</span>}
+            </Link>
           ))}
         </SectionCard>
-        <SectionCard title="Recent stock movements">
-          {movements.length === 0 && <EmptyState title="No movements" description="Stock changes will appear here." />}
-          {movements.map((m) => (
-            <div key={m.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-              <span className="text-sm text-muted">{m.type} · {m.itemName}</span>
-              <span className="text-xs text-muted">{m.quantity}</span>
-            </div>
+
+        <SectionCard title="Consumabili">
+          {consumables.length === 0 && <EmptyState title="No consumables yet" description="Add your first consumable." action={<Link href="/consumables/new" className="text-sm text-accent hover:underline">Add consumable</Link>} />}
+          {consumables.map((c) => (
+            <Link key={c.id} href={`/consumables/${c.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
+              <span className="text-sm">{c.name}</span>
+              {c.quantity <= 0
+                ? <span className="px-2 py-0.5 text-xs rounded-sm bg-red-900/20 border border-red-900/40 text-red-400">ESAURITO</span>
+                : <span className="text-xs text-foreground font-medium">{c.quantity} {c.unit ?? ""}</span>}
+            </Link>
           ))}
         </SectionCard>
       </div>
@@ -108,13 +88,5 @@ function SectionCard({ title, children }: { title: string; children: React.React
       <div className="text-xs text-muted uppercase tracking-wider mb-3">{title}</div>
       {children}
     </div>
-  );
-}
-
-function QuickLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link href={href} className="px-3 py-2 bg-background border border-border rounded-sm text-xs text-muted hover:text-foreground hover:border-border-hover transition-colors text-center">
-      {label}
-    </Link>
   );
 }
