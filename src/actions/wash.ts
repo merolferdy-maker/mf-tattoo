@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createWashCollection(formData: FormData) {
   const userId = await requireUser();
@@ -48,6 +49,7 @@ export async function createWashRecipe(formData: FormData) {
   });
   await prisma.washRecipeVersion.create({ data: { recipeId: r.id, versionNumber: 1, snapshot: JSON.stringify(r) } });
   revalidatePath("/wash-lab");
+  redirect("/wash-lab");
 }
 
 export async function updateWashRecipe(id: string, formData: FormData) {
@@ -77,12 +79,14 @@ export async function updateWashRecipe(id: string, formData: FormData) {
   const count = await prisma.washRecipeVersion.count({ where: { recipeId: id } });
   await prisma.washRecipeVersion.create({ data: { recipeId: id, versionNumber: count + 1, snapshot: JSON.stringify(data) } });
   revalidatePath("/wash-lab");
+  redirect("/wash-lab");
 }
 
 export async function deleteWashRecipe(id: string) {
   const userId = await requireUser();
   await prisma.washRecipe.deleteMany({ where: { id, userId } });
   revalidatePath("/wash-lab");
+  redirect("/wash-lab");
 }
 
 export async function duplicateWashRecipe(id: string) {
@@ -104,6 +108,7 @@ export async function duplicateWashRecipe(id: string) {
     });
   }
   revalidatePath("/wash-lab");
+  redirect("/wash-lab");
 }
 
 export async function addShade(formData: FormData) {

@@ -1,9 +1,6 @@
-"use client";
 import { createWashRecipe, updateWashRecipe } from "@/actions/wash";
-import { useRouter } from "next/navigation";
 
 export function WashRecipeForm({ collections, inks, initial }: { collections: any[]; inks: any[]; initial?: any }) {
-  const router = useRouter();
   const action = initial ? updateWashRecipe.bind(null, initial.id) : createWashRecipe;
   return (
     <form action={action} className="space-y-3 max-w-2xl">
@@ -54,7 +51,7 @@ export function WashRecipeForm({ collections, inks, initial }: { collections: an
       </div>
       <div className="flex gap-2">
         <button type="submit" className="px-4 py-2 bg-foreground text-background text-sm">Save</button>
-        <button type="button" onClick={() => router.back()} className="px-4 py-2 border border-border text-sm">Cancel</button>
+        <a href="/wash-lab" className="px-4 py-2 border border-border text-sm inline-block">Cancel</a>
       </div>
     </form>
   );
