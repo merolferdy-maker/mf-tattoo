@@ -48,6 +48,10 @@ export function WashRecipeForm({ collections, inks, initial }: { collections: an
           <input name="imageUrl" defaultValue={initial?.imageUrl ?? ""} className="w-full bg-background border border-border px-3 py-2 text-sm" />
         </div>
       </div>
+      <div>
+        <label className="block text-xs text-muted mb-1">Notes</label>
+        <textarea name="notes" defaultValue={initial?.notes ?? ""} className="w-full bg-background border border-border px-3 py-2 text-sm min-h-[80px]" />
+      </div>
       <div className="flex gap-2">
         <button type="submit" className="px-4 py-2 bg-foreground text-background text-sm">Save</button>
         <button type="button" onClick={() => router.back()} className="px-4 py-2 border border-border text-sm">Cancel</button>
