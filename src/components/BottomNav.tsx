@@ -1,4 +1,4 @@
-import Link from "next/link";
+// plain anchors for full reload
 import { LayoutDashboard, Cpu, Droplets, Package } from "lucide-react";
 
 const primary = [
@@ -14,10 +14,10 @@ export default function BottomNav() {
       {primary.map((p) => {
         const Icon = p.icon;
         return (
-          <Link key={p.href} href={p.href} className="flex flex-col items-center text-[10px] text-muted">
+          <a key={p.href} href={p.href} className="flex flex-col items-center text-[10px] text-muted">
             <Icon size={20} />
             <span>{p.label}</span>
-          </Link>
+          </a>
         );
       })}
     </nav>
