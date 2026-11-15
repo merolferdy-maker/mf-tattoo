@@ -43,6 +43,7 @@ export default async function InksPage({ searchParams }: { searchParams: Promise
               {i.expirationDate && (
                 <div className="mt-2 text-xs text-muted">Exp: {new Date(i.expirationDate).toLocaleDateString()}</div>
               )}
+              {i.notes && <div className="mt-2 text-xs text-muted line-clamp-2">{i.notes}</div>}
             </Link>
           ))}
         </div>

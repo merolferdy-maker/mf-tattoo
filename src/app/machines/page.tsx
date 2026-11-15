@@ -28,6 +28,7 @@ export default async function MachinesPage() {
               {(m.strokeMin || m.strokeMax) && (
                 <div className="mt-2 text-xs text-muted">Stroke: {m.strokeMin ?? "-"} – {m.strokeMax ?? "-"} mm</div>
               )}
+              {m.notes && <div className="mt-2 text-xs text-muted line-clamp-2">{m.notes}</div>}
             </Link>
           ))}
         </div>

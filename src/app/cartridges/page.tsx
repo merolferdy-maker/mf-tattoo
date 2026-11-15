@@ -28,6 +28,7 @@ export default async function CartridgesPage() {
                 <span className="text-muted">Qty: <span className="text-foreground">{c.quantity}</span></span>
                 <span className="text-muted">Min: {c.minStockLevel}</span>
               </div>
+              {c.notes && <div className="mt-2 text-xs text-muted line-clamp-2">{c.notes}</div>}
             </Link>
           ))}
         </div>

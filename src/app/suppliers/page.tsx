@@ -21,6 +21,7 @@ export default async function SuppliersPage() {
               <div className="text-xs text-muted mt-1">{s.contactPerson}</div>
               <div className="text-xs text-muted mt-0.5">{s.email} · {s.phone}</div>
               {s.website && <div className="text-xs text-muted mt-0.5">{s.website}</div>}
+              {s.notes && <div className="mt-2 text-xs text-muted line-clamp-2">{s.notes}</div>}
             </Link>
           ))}
         </div>

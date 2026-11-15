@@ -36,6 +36,7 @@ export default async function PresetsPage({ searchParams }: { searchParams: Prom
               </div>
               <div className="text-xs text-muted mt-1">{p.category.replace(/_/g, " ")}</div>
               <div className="mt-3 text-xs text-muted">{p.machine.customName || p.machine.brand} · {p.voltage ?? "-"}V · {p.stroke ?? "-"}mm</div>
+              {p.notes && <div className="mt-2 text-xs text-muted line-clamp-2">{p.notes}</div>}
             </Link>
           ))}
         </div>
