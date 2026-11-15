@@ -11,6 +11,7 @@ function readData(formData: FormData) {
     presetId: formData.get("presetId") ? String(formData.get("presetId")) : null,
     cartridgeInfo: formData.get("cartridgeInfo") ? String(formData.get("cartridgeInfo")) : null,
     inkUsed: formData.get("inkUsed") ? String(formData.get("inkUsed")) : null,
+    washType: formData.get("washType") ? String(formData.get("washType")) : null,
     recipeId: formData.get("recipeId") ? String(formData.get("recipeId")) : null,
     notes: formData.get("notes") ? String(formData.get("notes")) : null,
     imageUrls: serializeImageUrls(parseImageUrls(formData.get("imageUrls") ? String(formData.get("imageUrls")) : null)),

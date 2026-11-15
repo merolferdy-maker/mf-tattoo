@@ -31,7 +31,7 @@ export default async function SessionsPage() {
                     <div className="font-medium text-foreground group-hover:text-accent transition-colors">{new Date(s.sessionDate).toLocaleDateString()}</div>
                     {photos.length > 0 && <span className="text-xs text-muted">{photos.length} photo{photos.length === 1 ? "" : "s"}</span>}
                   </div>
-                  <div className="text-xs text-muted mt-1">{s.machine?.customName || s.machine?.brand} · {s.preset?.name} · {s.recipe?.name}</div>
+                  <div className="text-xs text-muted mt-1">{s.machine?.customName || s.machine?.brand} · {s.preset?.name}{s.washType ? ` · ${s.washType === "WHITEWASH" ? "Whitewash" : s.washType === "GRAYWASH" ? "Graywash" : s.washType}` : ""}</div>
                   {s.notes && <div className="text-xs text-muted mt-2 line-clamp-2">{s.notes}</div>}
                 </div>
               </Link>

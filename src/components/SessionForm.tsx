@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { PhotoUploader } from "@/components/PhotoUploader";
 import { parseImageUrls } from "@/lib/images";
 
-export function SessionForm({ machines, presets, recipes, initial }: { machines: any[]; presets: any[]; recipes: any[]; initial?: any }) {
+export function SessionForm({ machines, presets, initial }: { machines: any[]; presets: any[]; initial?: any }) {
   const router = useRouter();
   const action = initial ? updateSession.bind(null, initial.id) : createSession;
   return (
@@ -28,10 +28,11 @@ export function SessionForm({ machines, presets, recipes, initial }: { machines:
         <Field name="cartridgeInfo" label="Cartridge info" defaultValue={initial?.cartridgeInfo ?? ""} />
         <Field name="inkUsed" label="Ink used" defaultValue={initial?.inkUsed ?? ""} />
         <div>
-          <label className="block text-xs text-muted mb-1">Recipe</label>
-          <select name="recipeId" defaultValue={initial?.recipeId ?? ""} className="w-full bg-background border border-border px-3 py-2 text-sm">
+          <label className="block text-xs text-muted mb-1">Color type</label>
+          <select name="washType" defaultValue={initial?.washType ?? ""} className="w-full bg-background border border-border px-3 py-2 text-sm">
             <option value="">None</option>
-            {recipes.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+            <option value="WHITEWASH">Whitewash</option>
+            <option value="GRAYWASH">Graywash</option>
           </select>
         </div>
       </div>

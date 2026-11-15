@@ -387,6 +387,7 @@ model SessionLog {
   preset        MachinePreset? @relation(fields: [presetId], references: [id])
   cartridgeInfo String?
   inkUsed       String?
+  washType      String?
   recipeId      String?
   recipe        WashRecipe?    @relation(fields: [recipeId], references: [id])
   notes         String?

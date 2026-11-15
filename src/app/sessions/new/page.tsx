@@ -4,15 +4,14 @@ import { SessionForm } from "@/components/SessionForm";
 
 export default async function NewSessionPage() {
   const userId = await requireUser();
-  const [machines, presets, recipes] = await Promise.all([
+  const [machines, presets] = await Promise.all([
     prisma.machine.findMany({ where: { userId } }),
     prisma.machinePreset.findMany({ where: { userId } }),
-    prisma.washRecipe.findMany({ where: { userId } }),
   ]);
   return (
-    <div className="p-4 md:p-6">
+    <div className="p-4 md:p-6 max-w-2xl mx-auto">
       <h1 className="text-xl font-semibold mb-4">New session</h1>
-      <SessionForm machines={machines} presets={presets} recipes={recipes} />
+      <SessionForm machines={machines} presets={presets} />
     </div>
   );
 }

@@ -99,15 +99,15 @@ export function PhotoUploader({ initial }: { initial?: string[] }) {
       </div>
 
       {images.length > 0 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
           {images.map((src, i) => (
-            <div key={i} className="relative group aspect-square bg-background border border-border rounded-sm overflow-hidden">
+            <div key={i} className="relative group bg-background border border-border rounded-sm overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`photo ${i + 1}`} className="w-full h-full object-cover" />
+              <img src={src} alt={`photo ${i + 1}`} className="w-full h-72 object-contain" />
               <button
                 type="button"
                 onClick={() => remove(i)}
-                className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center rounded-sm bg-black/70 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity"
                 aria-label="Remove photo"
               >
                 ✕

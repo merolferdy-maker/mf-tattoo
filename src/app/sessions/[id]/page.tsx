@@ -22,11 +22,11 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
       </div>
 
       {photos.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {photos.map((src, i) => (
-            <a key={i} href={src} target="_blank" rel="noreferrer" className="block aspect-square bg-background border border-border rounded-sm overflow-hidden group">
+            <a key={i} href={src} target="_blank" rel="noreferrer" className="block bg-background border border-border rounded-sm overflow-hidden group">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`tattoo ${i + 1}`} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" />
+              <img src={src} alt={`tattoo ${i + 1}`} className="w-full h-80 object-contain group-hover:opacity-90 transition-opacity" />
             </a>
           ))}
         </div>
@@ -37,7 +37,7 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
         <div>Preset: {s.preset?.name}</div>
         <div>Cartridge: {s.cartridgeInfo}</div>
         <div>Ink: {s.inkUsed}</div>
-        <div>Recipe: {s.recipe?.name}</div>
+        <div>Color type: {s.washType === "WHITEWASH" ? "Whitewash" : s.washType === "GRAYWASH" ? "Graywash" : "—"}</div>
         <div>Notes: {s.notes}</div>
       </div>
     </div>
