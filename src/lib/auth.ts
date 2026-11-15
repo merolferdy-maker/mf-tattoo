@@ -1,13 +1,11 @@
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { decode } from "next-auth/jwt";
 import { redirect } from "next/navigation";
 
 async function getSessionToken() {
   const cookieStore = await cookies();
-  const hdrs = await headers();
-  const isHttps = hdrs.get("x-forwarded-proto") === "https" || (hdrs.get("host") || "").includes("vercel.app");
-  const names = isHttps ? ["__Secure-next-auth.session-token", "next-auth.session-token"] : ["next-auth.session-token", "__Secure-next-auth.session-token"];
   const secret = process.env.NEXTAUTH_SECRET || "dev-secret-change-me";
+  const names = ["__Secure-next-auth.session-token", "next-auth.session-token"];
   for (const name of names) {
     const raw = cookieStore.get(name)?.value;
     if (!raw) continue;
