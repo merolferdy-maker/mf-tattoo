@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: false,
+  reactStrictMode: false,
   turbopack: {
     rules: {
       "*.css": {
