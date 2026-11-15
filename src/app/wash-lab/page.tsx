@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
 import Link from "next/link";
 import { PageHeader, EmptyState } from "@/components/ui/kit";
-import { WashCalculator } from "@/components/WashCalculator";
 
 export default async function WashLabPage({ searchParams }: { searchParams: Promise<{ type?: string; collection?: string }> }) {
   const { type } = await searchParams;
@@ -22,10 +21,6 @@ export default async function WashLabPage({ searchParams }: { searchParams: Prom
         <Link href="/wash-lab" className={`px-3 py-1.5 text-xs rounded-sm border transition-colors ${!filterType ? "bg-card border-border-hover text-foreground" : "border-border text-muted hover:text-foreground"}`}>All</Link>
       </div>
 
-      <div className="mb-6">
-        <WashCalculator />
-      </div>
-
       {recipes.length === 0 ? (
         <EmptyState title="No recipes yet" description="Create your first wash recipe." action={<Link href="/wash-lab/new" className="px-4 py-2 bg-foreground text-background text-sm font-medium rounded-sm hover:opacity-90">+ New recipe</Link>} />
       ) : (
@@ -37,8 +32,8 @@ export default async function WashLabPage({ searchParams }: { searchParams: Prom
                 {r.favorite && <span className="text-accent text-sm">★</span>}
               </div>
               <div className="text-xs text-muted mt-1">{r.type} · {r.baseInkBrand} {r.baseInkName}</div>
-              <div className="mt-3 text-xs text-muted">{r.totalVolume ?? "-"} ml · {r.inkQuantity ?? "-"} ink / {r.diluentQuantity ?? "-"} diluent</div>
-              <div className="mt-1 text-xs text-muted">{r.shades.length} shades</div>
+              <div className="text-xs text-muted mt-0.5">Diluent: {r.diluentBrand}</div>
+              <div className="mt-3 text-xs text-muted">Drop ink: {r.inkQuantity ?? "-"} · Drop diluent: {r.diluentQuantity ?? "-"}</div>
             </Link>
           ))}
         </div>
