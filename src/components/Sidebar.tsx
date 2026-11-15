@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Cpu, Settings2, Droplets, Beaker, Package, Syringe, Boxes, Truck, NotebookPen, CalendarClock, BarChart3, Star, Search, ShieldCheck, LogOut } from "lucide-react";
+import { LayoutDashboard, Cpu, Settings2, Droplets, Beaker, Package, Syringe, Boxes, Truck, NotebookPen, CalendarClock, Search, ShieldCheck, LogOut } from "lucide-react";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -15,8 +15,6 @@ const nav = [
   { href: "/notes", label: "Notes", icon: NotebookPen },
   { href: "/sessions", label: "Sessions", icon: CalendarClock },
   { href: "/stock", label: "Stock", icon: Package },
-  { href: "/favorites", label: "Favorites", icon: Star },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: ShieldCheck },
 ];
 

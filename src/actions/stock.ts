@@ -46,7 +46,6 @@ export async function recordMovement(formData: FormData) {
   revalidatePath("/inks");
   revalidatePath("/cartridges");
   revalidatePath("/consumables");
-  revalidatePath("/analytics");
 }
 
 export async function markPurchased(formData: FormData) {
