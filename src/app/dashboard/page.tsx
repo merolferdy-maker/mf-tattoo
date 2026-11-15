@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
 import Link from "next/link";
+import { PageHeader, StatCard, EmptyState } from "@/components/ui/kit";
 
 export default async function DashboardPage() {
   const userId = await requireUser();
@@ -20,78 +21,100 @@ export default async function DashboardPage() {
   const favRecipes = await prisma.washRecipe.findMany({ where: { userId, favorite: true }, take: 5 });
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <h1 className="text-xl font-semibold">Dashboard</h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Stat label="Products (inks)" value={inks.length} />
-        <Stat label="Machines" value={machines.length} />
-        <Stat label="Ink bottles" value={inks.length} />
-        <Stat label="Cartridges" value={cartridges.reduce((a, c) => a + c.quantity, 0)} />
-        <Stat label="Consumables" value={consumables.length} />
-        <Stat label="Low stock" value={lowStock} />
-        <Stat label="Expiring soon" value={expiring} />
-        <Stat label="Presets" value={presets.length} />
+    <div className="p-4 md:p-8 max-w-7xl mx-auto fade-up">
+      <PageHeader title="Dashboard" subtitle="Overview of your studio" actions={
+        <>
+          <Link href="/inks/new" className="px-4 py-2 bg-foreground text-background text-sm font-medium rounded-sm hover:opacity-90">+ Product</Link>
+          <Link href="/machines/new" className="px-4 py-2 bg-card border border-border text-sm font-medium rounded-sm hover:bg-card-hover">+ Machine</Link>
+        </>
+      } />
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <StatCard label="Machines" value={machines.length} />
+        <StatCard label="Ink bottles" value={inks.length} />
+        <StatCard label="Cartridges" value={cartridges.reduce((a, c) => a + c.quantity, 0)} />
+        <StatCard label="Consumables" value={consumables.length} />
+        <StatCard label="Presets" value={presets.length} />
+        <StatCard label="Low stock" value={lowStock} hint={lowStock > 0 ? "Needs attention" : "All good"} />
+        <StatCard label="Expiring soon" value={expiring} hint={expiring > 0 ? "Within 30 days" : "None"} />
+        <StatCard label="Total products" value={inks.length + cartridges.length + consumables.length} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="border border-border p-4">
-          <div className="text-sm font-medium mb-2">Quick actions</div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <SectionCard title="Quick actions">
           <div className="grid grid-cols-2 gap-2">
-            <Link href="/inks/new" className="px-3 py-2 bg-card border border-border text-xs">+ Product</Link>
-            <Link href="/machines/new" className="px-3 py-2 bg-card border border-border text-xs">+ Machine</Link>
-            <Link href="/presets/new" className="px-3 py-2 bg-card border border-border text-xs">+ Preset</Link>
-            <Link href="/wash-lab/new" className="px-3 py-2 bg-card border border-border text-xs">+ Wash recipe</Link>
-            <Link href="/stock" className="px-3 py-2 bg-card border border-border text-xs">Register purchase</Link>
-            <Link href="/stock" className="px-3 py-2 bg-card border border-border text-xs">Register consumption</Link>
+            <QuickLink href="/inks/new" label="Add ink" />
+            <QuickLink href="/machines/new" label="Add machine" />
+            <QuickLink href="/presets/new" label="Create preset" />
+            <QuickLink href="/wash-lab/new" label="Create wash recipe" />
+            <QuickLink href="/cartridges/new" label="Add cartridge" />
+            <QuickLink href="/consumables/new" label="Add consumable" />
+            <QuickLink href="/stock" label="Register purchase" />
+            <QuickLink href="/stock" label="Register consumption" />
           </div>
-        </div>
-        <div className="border border-border p-4">
-          <div className="text-sm font-medium mb-2">Notifications</div>
-          {lowStock === 0 && expiring === 0 && <div className="text-muted text-xs">No alerts.</div>}
-          {lowStock > 0 && <div className="text-xs text-amber-400">⚠ {lowStock} low-stock products</div>}
-          {expiring > 0 && <div className="text-xs text-amber-400">⚠ {expiring} products expiring soon</div>}
-        </div>
+        </SectionCard>
+        <SectionCard title="Notifications">
+          {lowStock === 0 && expiring === 0 && <div className="text-muted text-sm">No alerts. Everything is in order.</div>}
+          {lowStock > 0 && <div className="text-sm text-amber-400/90 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400" />{lowStock} low-stock products</div>}
+          {expiring > 0 && <div className="text-sm text-amber-400/90 flex items-center gap-2 mt-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400" />{expiring} products expiring soon</div>}
+        </SectionCard>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="border border-border p-4">
-          <div className="text-sm font-medium mb-2">Recently added products</div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <SectionCard title="Recently added inks">
+          {recentInks.length === 0 && <EmptyState title="No inks yet" description="Add your first ink product." action={<Link href="/inks/new" className="text-sm text-accent hover:underline">Add ink</Link>} />}
           {recentInks.map((i) => (
-            <Link key={i.id} href={`/inks/${i.id}`} className="block text-xs border-b border-border py-1 hover:text-foreground">{i.brand} {i.colorName}</Link>
+            <Link key={i.id} href={`/inks/${i.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
+              <span className="text-sm">{i.brand} {i.colorName}</span>
+              <span className="text-xs text-muted">{i.currentQuantity} ml</span>
+            </Link>
           ))}
-          {recentInks.length === 0 && <div className="text-muted text-xs">None.</div>}
-        </div>
-        <div className="border border-border p-4">
-          <div className="text-sm font-medium mb-2">Recently modified presets</div>
+        </SectionCard>
+        <SectionCard title="Recently modified presets">
+          {presets.length === 0 && <EmptyState title="No presets yet" description="Create your first machine preset." action={<Link href="/presets/new" className="text-sm text-accent hover:underline">Create preset</Link>} />}
           {presets.map((p) => (
-            <Link key={p.id} href={`/presets/${p.id}`} className="block text-xs border-b border-border py-1 hover:text-foreground">{p.name}</Link>
+            <Link key={p.id} href={`/presets/${p.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
+              <span className="text-sm">{p.name}</span>
+              <span className="text-xs text-muted">{p.category.replace(/_/g, " ")}</span>
+            </Link>
           ))}
-          {presets.length === 0 && <div className="text-muted text-xs">None.</div>}
-        </div>
+        </SectionCard>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="border border-border p-4">
-          <div className="text-sm font-medium mb-2">Favorite recipes</div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <SectionCard title="Favorite wash recipes">
+          {favRecipes.length === 0 && <EmptyState title="No favorites" description="Star your favorite wash recipes." />}
           {favRecipes.map((r) => (
-            <Link key={r.id} href={`/wash-lab/${r.id}`} className="block text-xs border-b border-border py-1 hover:text-foreground">{r.name}</Link>
+            <Link key={r.id} href={`/wash-lab/${r.id}`} className="block py-2 border-b border-border last:border-0 text-sm text-muted hover:text-foreground transition-colors">{r.name}</Link>
           ))}
-          {favRecipes.length === 0 && <div className="text-muted text-xs">None.</div>}
-        </div>
-        <div className="border border-border p-4">
-          <div className="text-sm font-medium mb-2">Recent stock movements</div>
+        </SectionCard>
+        <SectionCard title="Recent stock movements">
+          {movements.length === 0 && <EmptyState title="No movements" description="Stock changes will appear here." />}
           {movements.map((m) => (
-            <div key={m.id} className="text-xs border-b border-border py-1">{m.type} · {m.itemName} · {m.quantity}</div>
+            <div key={m.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+              <span className="text-sm text-muted">{m.type} · {m.itemName}</span>
+              <span className="text-xs text-muted">{m.quantity}</span>
+            </div>
           ))}
-          {movements.length === 0 && <div className="text-muted text-xs">None.</div>}
-        </div>
+        </SectionCard>
       </div>
     </div>
   );
 }
 
-function Stat({ label, value }: { label: string; value: any }) {
+function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-card border border-border p-3">
-      <div className="text-xs text-muted">{label}</div>
-      <div className="text-lg font-semibold mt-1">{value}</div>
+    <div className="bg-card border border-border rounded-sm p-5 card-shadow">
+      <div className="text-xs text-muted uppercase tracking-wider mb-3">{title}</div>
+      {children}
     </div>
+  );
+}
+
+function QuickLink({ href, label }: { href: string; label: string }) {
+  return (
+    <Link href={href} className="px-3 py-2 bg-background border border-border rounded-sm text-xs text-muted hover:text-foreground hover:border-border-hover transition-colors text-center">
+      {label}
+    </Link>
   );
 }
