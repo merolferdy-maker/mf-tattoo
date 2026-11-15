@@ -31,10 +31,10 @@ export default async function DashboardPage() {
       } />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <StatCard label="Inchiostri" value={inkTotal} />
-        <StatCard label="Aghi" value={cartTotal} />
-        <StatCard label="Consumabili" value={consTotal} />
-        <StatCard label="Totale prodotti" value={inkTotal + cartTotal + consTotal} />
+        <StatCard label="Inks" value={inkTotal} />
+        <StatCard label="Cartridges" value={cartTotal} />
+        <StatCard label="Consumables" value={consTotal} />
+        <StatCard label="Total products" value={inkTotal + cartTotal + consTotal} />
         <StatCard label="Machines" value={machines.length} />
         <StatCard label="Presets" value={presets.length} />
         <StatCard label="Low stock" value={lowStock} hint={lowStock > 0 ? "Needs attention" : "All good"} />
@@ -42,7 +42,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
-        <SectionCard title="Inchiostri">
+        <SectionCard title="Inks">
           {inks.length === 0 && <EmptyState title="No inks yet" description="Add your first ink product." action={<Link href="/inks/new" className="text-sm text-accent hover:underline">Add ink</Link>} />}
           {inks.map((i) => (
             <Link key={i.id} href={`/inks/${i.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
@@ -54,7 +54,7 @@ export default async function DashboardPage() {
           ))}
         </SectionCard>
 
-        <SectionCard title="Aghi">
+        <SectionCard title="Cartridges">
           {cartridges.length === 0 && <EmptyState title="No needles yet" description="Add your first cartridge." action={<Link href="/cartridges/new" className="text-sm text-accent hover:underline">Add cartridge</Link>} />}
           {cartridges.map((c) => (
             <Link key={c.id} href={`/cartridges/${c.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
           ))}
         </SectionCard>
 
-        <SectionCard title="Consumabili">
+        <SectionCard title="Consumables">
           {consumables.length === 0 && <EmptyState title="No consumables yet" description="Add your first consumable." action={<Link href="/consumables/new" className="text-sm text-accent hover:underline">Add consumable</Link>} />}
           {consumables.map((c) => (
             <Link key={c.id} href={`/consumables/${c.id}`} className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:text-foreground text-muted transition-colors">
