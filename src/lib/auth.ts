@@ -1,13 +1,15 @@
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { decode } from "next-auth/jwt";
 import { redirect } from "next/navigation";
 
 async function getSessionToken() {
-  const cookieStore = await cookies();
+  const hdrs = await headers();
+  const cookieHeader = hdrs.get("cookie") || "";
   const secret = process.env.NEXTAUTH_SECRET || "dev-secret-change-me";
   const names = ["__Secure-next-auth.session-token", "next-auth.session-token"];
   for (const name of names) {
-    const raw = cookieStore.get(name)?.value;
+    const match = cookieHeader.match(new RegExp("(?:^|;\\s*)" + name + "=([^;]+)"));
+    const raw = match ? decodeURIComponent(match[1]) : null;
     if (!raw) continue;
     try {
       const token = await decode({ token: raw, secret });
