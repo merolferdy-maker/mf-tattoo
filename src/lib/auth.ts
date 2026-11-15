@@ -1,16 +1,16 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
+import { getToken } from "next-auth/jwt";
 import { redirect } from "next/navigation";
 
 export async function requireUser() {
-  const session = await getServerSession(authOptions);
-  const userId = (session?.user as any)?.id;
-  if (!userId) redirect("/login");
-  return userId as string;
+  const cookieStore = await cookies();
+  const token = await getToken({ cookieStore, secret: process.env.NEXTAUTH_SECRET || "dev-secret-change-me" });
+  if (!token?.id) redirect("/login");
+  return token.id as string;
 }
 
 export async function currentUser() {
-  const session = await getServerSession(authOptions);
-  return (session?.user as any)?.id as string | undefined;
+  const cookieStore = await cookies();
+  const token = await getToken({ cookieStore, secret: process.env.NEXTAUTH_SECRET || "dev-secret-change-me" });
+  return token?.id as string | undefined;
 }
