@@ -32,6 +32,10 @@ export function WashRecipeForm({ collections, inks, initial }: { collections: an
           <input name="diluentBrand" defaultValue={initial?.diluentBrand ?? ""} className="w-full bg-background border border-border px-3 py-2 text-sm" />
         </div>
         <div>
+          <label className="block text-xs text-muted mb-1">Diluent ink name</label>
+          <input name="diluentType" defaultValue={initial?.diluentType ?? ""} className="w-full bg-background border border-border px-3 py-2 text-sm" />
+        </div>
+        <div>
           <label className="block text-xs text-muted mb-1">Drop ink</label>
           <input name="inkQuantity" type="number" defaultValue={initial?.inkQuantity ?? ""} className="w-full bg-background border border-border px-3 py-2 text-sm" />
         </div>

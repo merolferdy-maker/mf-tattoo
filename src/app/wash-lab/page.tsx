@@ -32,7 +32,7 @@ export default async function WashLabPage({ searchParams }: { searchParams: Prom
                 {r.favorite && <span className="text-accent text-sm">★</span>}
               </div>
               <div className="text-xs text-muted mt-1">{r.type} · {r.baseInkBrand} {r.baseInkName}</div>
-              <div className="text-xs text-muted mt-0.5">Diluent: {r.diluentBrand}</div>
+              <div className="text-xs text-muted mt-0.5">Diluent: {r.diluentBrand} {r.diluentType}</div>
               <div className="mt-3 text-xs text-muted">Drop ink: {r.inkQuantity ?? "-"} · Drop diluent: {r.diluentQuantity ?? "-"}</div>
             </Link>
           ))}

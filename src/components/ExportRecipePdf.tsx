@@ -11,7 +11,7 @@ export default function ExportRecipePdf({ recipe }: { recipe: any }) {
     const lines = [
       `Type: ${recipe.type}`,
       `Base ink: ${recipe.baseInkBrand || ""} ${recipe.baseInkName || ""}`,
-      `Diluent: ${recipe.diluentBrand || ""}`,
+      `Diluent: ${recipe.diluentBrand || ""} ${recipe.diluentType || ""}`,
       `Drop ink: ${recipe.inkQuantity ?? "-"}`,
       `Drop diluent: ${recipe.diluentQuantity ?? "-"}`,
       `Notes: ${recipe.notes ?? ""}`,
