@@ -45,10 +45,10 @@ export default async function PortfolioPage() {
                   </div>
                 </Link>
                 <div className="absolute top-2 right-2 grid grid-cols-2 gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                  <form action={movePortfolio.bind(null, e.id, -2)}><button type="submit" onClick={(ev) => ev.stopPropagation()} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move up">↑</button></form>
-                  <form action={movePortfolio.bind(null, e.id, 2)}><button type="submit" onClick={(ev) => ev.stopPropagation()} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move down">↓</button></form>
-                  <form action={movePortfolio.bind(null, e.id, -1)}><button type="submit" onClick={(ev) => ev.stopPropagation()} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move left">←</button></form>
-                  <form action={movePortfolio.bind(null, e.id, 1)}><button type="submit" onClick={(ev) => ev.stopPropagation()} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move right">→</button></form>
+                  <form action={movePortfolio.bind(null, e.id, -2)}><button type="submit" className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move up">↑</button></form>
+                  <form action={movePortfolio.bind(null, e.id, 2)}><button type="submit" className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move down">↓</button></form>
+                  <form action={movePortfolio.bind(null, e.id, -1)}><button type="submit" className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move left">←</button></form>
+                  <form action={movePortfolio.bind(null, e.id, 1)}><button type="submit" className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move right">→</button></form>
                 </div>
               </div>
             );
