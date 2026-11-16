@@ -18,16 +18,16 @@ export default async function PortfolioPage() {
       {entries.length === 0 ? (
         <EmptyState title="No tattoos yet" description="Add photos of your work to build your tattoo portfolio." action={<Link href="/sessions/portfolio/new" className="px-4 py-2 bg-foreground text-background text-sm font-medium rounded-sm hover:opacity-90">+ Add tattoo</Link>} />
       ) : (
-        <div className="grid grid-cols-1 sm:max-w-xs md:grid-cols-2 gap-4 md:gap-6" suppressHydrationWarning>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" suppressHydrationWarning>
           {entries.map((e) => {
             const photos = parseImageUrls(e.imageUrls);
             return (
               <div key={e.id} className="relative group bg-card border border-border rounded-sm card-shadow hover:border-border-hover transition-all fade-up overflow-hidden">
                 <Link href={`/sessions/portfolio/${e.id}`} className="block">
                   {photos.length > 0 && (
-                    <div className="bg-black overflow-hidden w-fit mx-auto">
+                    <div className="aspect-[3/4] bg-black overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={photos[0]} alt="tattoo" className="h-[32rem] w-auto object-contain group-hover:opacity-90 transition-opacity" />
+                      <img src={photos[0]} alt="tattoo" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                   )}
                   <div className="p-5">
