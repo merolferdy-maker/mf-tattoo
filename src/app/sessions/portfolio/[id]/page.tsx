@@ -22,7 +22,7 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
       </div>
 
       {photos.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-4" suppressHydrationWarning>
           {photos.map((src, i) => (
             <a key={i} href={src} target="_blank" rel="noreferrer" className="block bg-black border border-border rounded-sm overflow-hidden group w-fit mx-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}

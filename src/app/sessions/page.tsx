@@ -17,7 +17,7 @@ export default async function SessionsPage() {
       {sessions.length === 0 ? (
         <EmptyState title="No sessions yet" description="Log your first session and add photos of your tattoos." action={<Link href="/sessions/new" className="px-4 py-2 bg-foreground text-background text-sm font-medium rounded-sm hover:opacity-90">+ New</Link>} />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" suppressHydrationWarning>
           {sessions.map((s) => {
             const photos = parseImageUrls(s.imageUrls);
             return (

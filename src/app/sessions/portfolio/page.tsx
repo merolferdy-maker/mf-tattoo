@@ -18,7 +18,7 @@ export default async function PortfolioPage() {
       {entries.length === 0 ? (
         <EmptyState title="No tattoos yet" description="Add photos of your work to build your tattoo portfolio." action={<Link href="/sessions/portfolio/new" className="px-4 py-2 bg-foreground text-background text-sm font-medium rounded-sm hover:opacity-90">+ Add tattoo</Link>} />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" suppressHydrationWarning>
           {entries.map((e) => {
             const photos = parseImageUrls(e.imageUrls);
             return (
