@@ -17,10 +17,27 @@ function readData(formData: FormData) {
 
 export async function createPortfolio(formData: FormData) {
   const userId = await requireUser();
-  await prisma.portfolioEntry.create({ data: { userId, ...readData(formData) } });
+  const max = await prisma.portfolioEntry.aggregate({ where: { userId }, _max: { sortOrder: true } });
+  await prisma.portfolioEntry.create({ data: { userId, sortOrder: (max._max.sortOrder ?? -1) + 1, ...readData(formData) } });
   revalidatePath("/sessions/portfolio");
   revalidatePath("/sessions");
   redirect("/sessions/portfolio");
+}
+
+export async function movePortfolio(id: string, delta: number) {
+  const userId = await requireUser();
+  const entries = await prisma.portfolioEntry.findMany({ where: { userId }, orderBy: [{ sortOrder: "asc" }, { sessionDate: "desc" }] });
+  const idx = entries.findIndex((e) => e.id === id);
+  if (idx < 0) return;
+  const target = idx + delta;
+  if (target < 0 || target >= entries.length) return;
+  const a = entries[idx];
+  const b = entries[target];
+  await prisma.$transaction([
+    prisma.portfolioEntry.update({ where: { id: a.id }, data: { sortOrder: b.sortOrder } }),
+    prisma.portfolioEntry.update({ where: { id: b.id }, data: { sortOrder: a.sortOrder } }),
+  ]);
+  revalidatePath("/sessions/portfolio");
 }
 
 export async function updatePortfolio(id: string, formData: FormData) {

@@ -405,6 +405,7 @@ model PortfolioEntry {
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionDate DateTime @default(now())
+  sortOrder   Int      @default(0)
   machineId   String?
   machine     Machine? @relation(fields: [machineId], references: [id])
   washType    String?

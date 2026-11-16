@@ -4,10 +4,11 @@ import Link from "next/link";
 import { PageHeader, EmptyState } from "@/components/ui/kit";
 import { SessionsTabs } from "@/components/SessionsTabs";
 import { parseImageUrls } from "@/lib/images";
+import { movePortfolio } from "@/actions/portfolio";
 
 export default async function PortfolioPage() {
   const userId = await requireUser();
-  const entries = await prisma.portfolioEntry.findMany({ where: { userId }, include: { machine: true }, orderBy: { sessionDate: "desc" } });
+  const entries = await prisma.portfolioEntry.findMany({ where: { userId }, include: { machine: true }, orderBy: [{ sortOrder: "asc" }, { sessionDate: "desc" }] });
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto fade-up">
       <PageHeader title="Tattoo portfolio" subtitle="Photos of your tattoo work" actions={
@@ -21,27 +22,35 @@ export default async function PortfolioPage() {
           {entries.map((e) => {
             const photos = parseImageUrls(e.imageUrls);
             return (
-              <Link key={e.id} href={`/sessions/portfolio/${e.id}`} className="group block bg-card border border-border rounded-sm card-shadow hover:border-border-hover transition-all fade-up overflow-hidden">
-                {photos.length > 0 && (
-                  <div className="bg-black overflow-hidden flex justify-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={photos[0]} alt="tattoo" className="h-[26rem] w-auto object-contain group-hover:opacity-90 transition-opacity" />
+              <div key={e.id} className="relative group bg-card border border-border rounded-sm card-shadow hover:border-border-hover transition-all fade-up overflow-hidden">
+                <Link href={`/sessions/portfolio/${e.id}`} className="block">
+                  {photos.length > 0 && (
+                    <div className="bg-black overflow-hidden w-fit mx-auto">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={photos[0]} alt="tattoo" className="h-[26rem] w-auto object-contain group-hover:opacity-90 transition-opacity" />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <div className="flex items-start justify-between">
+                      <div className="font-medium text-foreground group-hover:text-accent transition-colors">{new Date(e.sessionDate).toLocaleDateString()}</div>
+                      {photos.length > 0 && <span className="text-xs text-muted">{photos.length} photo{photos.length === 1 ? "" : "s"}</span>}
+                    </div>
+                    <div className="text-xs text-muted mt-1">
+                      {[
+                        e.machine ? (e.machine.customName || `${e.machine.brand} ${e.machine.model}`) : null,
+                        e.washType === "WHITEWASH" ? "Whitewash" : e.washType === "GRAYWASH" ? "Graywash" : null,
+                      ].filter(Boolean).join(" · ") || "—"}
+                    </div>
+                    {e.notes && <div className="text-xs text-muted mt-2 line-clamp-2">{e.notes}</div>}
                   </div>
-                )}
-                <div className="p-5">
-                  <div className="flex items-start justify-between">
-                    <div className="font-medium text-foreground group-hover:text-accent transition-colors">{new Date(e.sessionDate).toLocaleDateString()}</div>
-                    {photos.length > 0 && <span className="text-xs text-muted">{photos.length} photo{photos.length === 1 ? "" : "s"}</span>}
-                  </div>
-                  <div className="text-xs text-muted mt-1">
-                    {[
-                      e.machine ? (e.machine.customName || `${e.machine.brand} ${e.machine.model}`) : null,
-                      e.washType === "WHITEWASH" ? "Whitewash" : e.washType === "GRAYWASH" ? "Graywash" : null,
-                    ].filter(Boolean).join(" · ") || "—"}
-                  </div>
-                  {e.notes && <div className="text-xs text-muted mt-2 line-clamp-2">{e.notes}</div>}
+                </Link>
+                <div className="absolute top-2 right-2 grid grid-cols-2 gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <form action={movePortfolio.bind(null, e.id, -2)}><button type="submit" onClick={(ev) => ev.stopPropagation()} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move up">↑</button></form>
+                  <form action={movePortfolio.bind(null, e.id, 2)}><button type="submit" onClick={(ev) => ev.stopPropagation()} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move down">↓</button></form>
+                  <form action={movePortfolio.bind(null, e.id, -1)}><button type="submit" onClick={(ev) => ev.stopPropagation()} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move left">←</button></form>
+                  <form action={movePortfolio.bind(null, e.id, 1)}><button type="submit" onClick={(ev) => ev.stopPropagation()} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move right">→</button></form>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>

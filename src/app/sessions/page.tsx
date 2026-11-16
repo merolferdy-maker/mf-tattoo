@@ -23,7 +23,7 @@ export default async function SessionsPage() {
             return (
               <Link key={s.id} href={`/sessions/${s.id}`} className="group block bg-card border border-border rounded-sm card-shadow hover:border-border-hover transition-all fade-up overflow-hidden">
                 {photos.length > 0 && (
-                  <div className="bg-black overflow-hidden flex justify-center">
+                  <div className="bg-black overflow-hidden w-fit mx-auto">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={photos[0]} alt="tattoo" className="h-[26rem] w-auto object-contain group-hover:opacity-90 transition-opacity" />
                   </div>
