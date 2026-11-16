@@ -61,6 +61,16 @@ export function PhotoUploader({ initial }: { initial?: string[] }) {
     setUrl("");
   }
 
+  function move(i: number, delta: number) {
+    setImages((prev) => {
+      const next = [...prev];
+      const j = i + delta;
+      if (j < 0 || j >= next.length) return prev;
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
+  }
+
   function remove(i: number) {
     setImages((prev) => prev.filter((_, idx) => idx !== i));
   }
@@ -101,17 +111,14 @@ export function PhotoUploader({ initial }: { initial?: string[] }) {
       {images.length > 0 && (
         <div className="grid grid-cols-1 gap-3 mt-3">
           {images.map((src, i) => (
-            <div key={i} className="relative group bg-black border border-border rounded-sm overflow-hidden">
+            <div key={i} className="relative group bg-black border border-border rounded-sm overflow-hidden w-fit mx-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`photo ${i + 1}`} className="w-full h-[28rem] object-contain" />
-              <button
-                type="button"
-                onClick={() => remove(i)}
-                className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                aria-label="Remove photo"
-              >
-                ✕
-              </button>
+              <img src={src} alt={`photo ${i + 1}`} className="h-[28rem] w-auto object-contain" />
+              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button type="button" onClick={() => move(i, -1)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move up">↑</button>
+                <button type="button" onClick={() => move(i, 1)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move down">↓</button>
+                <button type="button" onClick={() => remove(i)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Remove photo">✕</button>
+              </div>
             </div>
           ))}
         </div>
