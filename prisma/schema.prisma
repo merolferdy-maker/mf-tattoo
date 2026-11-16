@@ -29,6 +29,7 @@ model User {
   stockMovements  StockMovement[]
   technicalNotes  TechnicalNote[]
   sessionLogs     SessionLog[]
+  portfolioEntries PortfolioEntry[]
   favorites       Favorite[]
   recentlyUsed    RecentlyUsed[]
 }
@@ -59,6 +60,7 @@ model Machine {
 
   presets           MachinePreset[]
   sessionLogs    SessionLog[]
+  portfolioEntries PortfolioEntry[]
   technicalNotes TechnicalNote[]
 
   @@index([userId])
@@ -394,6 +396,22 @@ model SessionLog {
   imageUrls     String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+
+  @@index([userId])
+}
+
+model PortfolioEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionDate DateTime @default(now())
+  machineId   String?
+  machine     Machine? @relation(fields: [machineId], references: [id])
+  washType    String?
+  notes       String?
+  imageUrls   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([userId])
 }

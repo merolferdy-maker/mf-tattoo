@@ -22,11 +22,11 @@ export default async function SessionDetailPage({ params }: { params: Promise<{ 
       </div>
 
       {photos.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="space-y-4">
           {photos.map((src, i) => (
-            <a key={i} href={src} target="_blank" rel="noreferrer" className="block bg-background border border-border rounded-sm overflow-hidden group">
+            <a key={i} href={src} target="_blank" rel="noreferrer" className="block bg-black border border-border rounded-sm overflow-hidden group">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`tattoo ${i + 1}`} className="w-full h-80 object-contain group-hover:opacity-90 transition-opacity" />
+              <img src={src} alt={`tattoo ${i + 1}`} className="w-full max-h-[85vh] object-contain group-hover:opacity-90 transition-opacity" />
             </a>
           ))}
         </div>

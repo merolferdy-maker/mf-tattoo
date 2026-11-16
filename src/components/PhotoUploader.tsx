@@ -16,7 +16,7 @@ async function compress(file: File): Promise<string> {
     image.src = dataUrl;
   });
 
-  const maxDim = 1100;
+  const maxDim = 1600;
   const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
   const w = Math.round(img.width * scale);
   const h = Math.round(img.height * scale);
@@ -28,7 +28,7 @@ async function compress(file: File): Promise<string> {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(img, 0, 0, w, h);
-  return canvas.toDataURL("image/jpeg", 0.72);
+  return canvas.toDataURL("image/jpeg", 0.75);
 }
 
 export function PhotoUploader({ initial }: { initial?: string[] }) {
@@ -99,11 +99,11 @@ export function PhotoUploader({ initial }: { initial?: string[] }) {
       </div>
 
       {images.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+        <div className="grid grid-cols-1 gap-3 mt-3">
           {images.map((src, i) => (
-            <div key={i} className="relative group bg-background border border-border rounded-sm overflow-hidden">
+            <div key={i} className="relative group bg-black border border-border rounded-sm overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`photo ${i + 1}`} className="w-full h-72 object-contain" />
+              <img src={src} alt={`photo ${i + 1}`} className="w-full h-[28rem] object-contain" />
               <button
                 type="button"
                 onClick={() => remove(i)}
