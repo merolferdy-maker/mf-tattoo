@@ -109,15 +109,17 @@ export function PhotoUploader({ initial }: { initial?: string[] }) {
       </div>
 
       {images.length > 0 && (
-        <div className="grid grid-cols-1 gap-3 mt-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
           {images.map((src, i) => (
             <div key={i} className="relative group bg-black border border-border rounded-sm overflow-hidden w-fit mx-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`photo ${i + 1}`} className="h-[28rem] w-auto object-contain" />
-              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button type="button" onClick={() => move(i, -1)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move up">↑</button>
-                <button type="button" onClick={() => move(i, 1)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move down">↓</button>
-                <button type="button" onClick={() => remove(i)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Remove photo">✕</button>
+              <img src={src} alt={`photo ${i + 1}`} className="h-[20rem] w-auto object-contain" />
+              <div className="absolute top-2 right-2 grid grid-cols-2 gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button type="button" onClick={() => move(i, -2)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move up">↑</button>
+                <button type="button" onClick={() => move(i, 2)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move down">↓</button>
+                <button type="button" onClick={() => move(i, -1)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move left">←</button>
+                <button type="button" onClick={() => move(i, 1)} className="w-7 h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Move right">→</button>
+                <button type="button" onClick={() => remove(i)} className="col-span-2 w-full h-7 flex items-center justify-center rounded-sm bg-black/70 text-white text-sm" aria-label="Remove photo">✕</button>
               </div>
             </div>
           ))}
