@@ -120,6 +120,26 @@ input:focus, select:focus, textarea:focus {
   border-radius: 4px;
 }
 
+/* Animated background */
+.bg-animated::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--accent) 4%, transparent), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, color-mix(in srgb, var(--bronze) 3%, transparent), transparent),
+    radial-gradient(ellipse 40% 30% at 10% 30%, color-mix(in srgb, var(--accent) 2%, transparent), transparent);
+  animation: bgShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes bgShift {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate(-2%, 1%) scale(1.02); opacity: 0.8; }
+  100% { transform: translate(2%, -1%) scale(0.98); opacity: 0.6; }
+}
+
 .text-balance { text-wrap: balance; }
 .text-pretty { text-wrap: pretty; }
 
@@ -128,4 +148,5 @@ input:focus, select:focus, textarea:focus {
   .print-only { display: block !important; }
   body { background: white !important; color: black !important; }
   .card-shadow, .shadow-card, .shadow-elevated { box-shadow: none !important; border: 1px solid #ccc !important; }
+  .bg-animated::before { display: none; }
 }
