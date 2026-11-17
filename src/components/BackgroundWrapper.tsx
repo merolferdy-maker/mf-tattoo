@@ -1,23 +1,21 @@
 "use client";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export function BackgroundWrapper({ children }: { children: React.ReactNode }) {
-  let session: any = { status: "unauthenticated", data: null };
-  try {
-    session = useSession();
-  } catch {
-    // SessionProvider not available during static generation
-  }
   const [bgImage, setBgImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (session?.data?.user?.backgroundImage) {
-      setBgImage(session.data.user.backgroundImage);
-    }
-  }, [session?.data?.user?.backgroundImage]);
+    fetch("/api/user/background")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.backgroundImage) setBgImage(d.backgroundImage);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
-  if (!session || session.status === "loading") {
+  if (loading) {
     return <div className="min-h-screen bg-background text-foreground bg-animated">{children}</div>;
   }
 

@@ -11,3 +11,9 @@ export async function uploadBackground(formData: FormData) {
   if (urls.length === 0) throw new Error("Invalid image");
   await prisma.user.update({ where: { id: userId }, data: { backgroundImage: urls[0] } });
 }
+
+export async function getUserBackground() {
+  const userId = await requireUser();
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { backgroundImage: true } });
+  return user?.backgroundImage ?? null;
+}
