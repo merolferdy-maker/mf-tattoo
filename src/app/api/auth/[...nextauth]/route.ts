@@ -20,17 +20,23 @@ export const authOptions: NextAuthOptions = {
         if (!user) return null;
         const ok = await compare(credentials.password, user.passwordHash);
         if (!ok) return null;
-        return { id: user.id, email: user.email, name: user.name ?? undefined };
+        return { id: user.id, email: user.email, name: user.name ?? undefined, backgroundImage: user.backgroundImage ?? undefined };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.backgroundImage = (user as any).backgroundImage;
+      }
       return token;
     },
     async session({ session, token }) {
-      if (session.user) (session.user as any).id = token.id;
+      if (session.user) {
+        (session.user as any).id = token.id;
+        (session.user as any).backgroundImage = token.backgroundImage;
+      }
       return session;
     },
   },
