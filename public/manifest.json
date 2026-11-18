@@ -1,0 +1,35 @@
+{
+  "name": "M&F Tattoo Studio Manager",
+  "short_name": "M&F Tattoo",
+  "description": "Professional tattoo studio management",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "shortcuts": [
+    {
+      "name": "New Session",
+      "short_name": "Session",
+      "description": "Log a new tattoo session",
+      "url": "/sessions/new",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Stock",
+      "short_name": "Stock",
+      "description": "Check inventory",
+      "url": "/stock",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
